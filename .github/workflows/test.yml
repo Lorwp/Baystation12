@@ -17,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Create Cache Dir
+        run: mkdir -p $HOME/spaceman_dmm/$SPACEMAN_DMM_VERSION
       - name: Setup Cache
         uses: actions/cache@v2
         with:
@@ -41,6 +43,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Create Cache Dir
+        run: mkdir -p $HOME/BYOND-${BYOND_MAJOR}.${BYOND_MINOR}
       - name: Setup Cache
         uses: actions/cache@v2
         with:
@@ -70,6 +74,8 @@ jobs:
         map_path: [example, torch, bearcat, away_sites_testing]
     steps:
       - uses: actions/checkout@v2
+      - name: Create Cache Dir
+        run: mkdir -p $HOME/BYOND-${BYOND_MAJOR}.${BYOND_MINOR}
       - name: Setup Cache
         uses: actions/cache@v2
         with:
