@@ -1,0 +1,4 @@
+-P ubuntu-latest=nektos/act-environments-ubuntu:18.04-full
+
+# run only test.yml by default
+-W ./.github/workflows/test.yml

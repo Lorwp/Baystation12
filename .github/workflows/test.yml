@@ -18,6 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Cache
+        if: ${{ !env.ACT }}
         uses: actions/cache@v2
         with:
           path: $HOME/spaceman_dmm/$SPACEMAN_DMM_VERSION
@@ -42,6 +43,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Cache
+        if: ${{ env.ACT }} != true
         uses: actions/cache@v2
         with:
           path: $HOME/BYOND-${BYOND_MAJOR}.${BYOND_MINOR}
@@ -58,7 +60,7 @@ jobs:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
           HOOK_OS_NAME: ${{ runner.os }}
           WORKFLOW_NAME: ${{ github.workflow }}
-        if: ${{ failure() }}
+        if: ${{ failure() }} && ${{ !env.ACT }}
         run: |
           wget https://raw.githubusercontent.com/DiscordHooks/github-actions-discord-webhook/master/send.sh
           chmod +x send.sh
@@ -71,6 +73,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Cache
+        if: ${{ !env.ACT }}
         uses: actions/cache@v2
         with:
           path: $HOME/BYOND-${BYOND_MAJOR}.${BYOND_MINOR}
@@ -86,7 +89,7 @@ jobs:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
           HOOK_OS_NAME: ${{ runner.os }}
           WORKFLOW_NAME: ${{ github.workflow }}
-        if: ${{ failure() }}
+        if: ${{ failure() }} && ${{ !env.ACT }}
         run: |
           wget https://raw.githubusercontent.com/DiscordHooks/github-actions-discord-webhook/master/send.sh
           chmod +x send.sh
