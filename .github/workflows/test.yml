@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - dev
+      - docker-build-check
 env:
   BYOND_MAJOR: "512"
   BYOND_MINOR: "1485"
@@ -91,3 +92,26 @@ jobs:
           wget https://raw.githubusercontent.com/DiscordHooks/github-actions-discord-webhook/master/send.sh
           chmod +x send.sh
           ./send.sh failure $WEBHOOK_URL
+  Docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+      - name: Build the Docker Image
+        run: docker build . --file Dockerfile --tag Baystation12:${{ env.GITHUB_SHA }}
+      - name: Run Failure Webhook
+        env:
+          JOB_STATUS: ${{ job.status }}
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          HOOK_OS_NAME: ${{ runner.os }}
+          WORKFLOW_NAME: ${{ github.workflow }}
+        if: ${{ failure() }}
+        run: |
+          wget https://raw.githubusercontent.com/DiscordHooks/github-actions-discord-webhook/master/send.sh
+          chmod +x send.sh
+          ./send.sh failure $WEBHOOK_URL
+      - name: Export Docker Image
+        run: docker save Baystation12:${{ env.GITHUB_SHA }} > Baystation12:${{ env.GITHUB_SHA }}.tar
+      - name: Upload Image as Build Artifact
+        uses: actions/upload-artifact@e448a9b857ee2131e752b06002bf0e093c65e571
+        name: Baystation12:${{ env.GITHUB_SHA }}
+        path: Baystation12:${{ env.GITHUB_SHA }}.tar
